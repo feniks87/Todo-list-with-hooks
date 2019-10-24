@@ -1,0 +1,19 @@
+.form {
+    grid-column: 2 / -2;
+    grid-row: 1;
+    align-self: center;
+    justify-self: center;
+    display: flex;
+}
+
+.form input {
+    margin-right: 1rem;
+    outline: none;
+    border-radius: 3px;
+    background-color: #eee0bb;
+    padding: 6px 10px;
+    display: block;
+    box-sizing: border-box;
+    box-shadow: 1px 5px 5px 0 rgba(0, 0, 0, 0.15);
+    border: 1px solid #c2bb93;
+}

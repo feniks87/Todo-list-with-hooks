@@ -1,6 +1,9 @@
-import React, { useState, useReducer } from 'react';
+import React, { useReducer } from 'react';
 import uuid from 'uuid';
 import './App.css';
+import AddTodo from './components/AddTodo/AddTodo';
+import Filter from './components/Filter/Filter';
+import TodoList from './components/TodoList/TodoList';
 
 const initialTodos = [
   {
@@ -63,87 +66,30 @@ const todoReducer = (state, action) => {
 };
 
 const App = () => {
-  const [task, setTask] = useState('');
   const [filter, dispatchFilter] = useReducer(filterReducer, 'ALL');
   const [todos, dispatchTodos] = useReducer(todoReducer, initialTodos);
 
-const handleInput = event => {
-  setTask(event.target.value);
-};
-
-const handleSubmit = event => {
-  event.preventDefault();
-  if (task) {
-    dispatchTodos({type: 'ADD_TASK', task, id: uuid()});
-  }
-  setTask('');
-};
-
-const handleCheckbox = todo => {
-  dispatchTodos({
-    type: todo.complete ? 'UNDO_TASK' : 'DO_TASK',
-    id: todo.id
+  const filteredTodos = todos.filter(todo => {
+    if (filter === 'ALL') {
+      return true;
+    }
+    if (filter === 'COMPLETE' && todo.complete) {
+      return true;
+    }
+    if (filter === 'INCOMPLETE' && !todo.complete) {
+      return true;
+    }
+    return false;
   })
-};
-
-const handleShowAll = () => {
-  dispatchFilter({type: 'SHOW_ALL'});
-};
-
-const handleShowComplete = () => {
-  dispatchFilter({type: 'SHOW_COMPLETE'});
-};
-
-const handleShowIncomplete = () => {
-  dispatchFilter({type: 'SHOW_INCOMPLETE'});
-};
-
-const filteredTodos = todos.filter(todo => {
-  if (filter === 'ALL') {
-    return true;
-  }
-  if (filter === 'COMPLETE' && todo.complete) {
-    return true;
-  }
-  if (filter === 'INCOMPLETE' && !todo.complete) {
-    return true;
-  }
-  return false;
-})
-
-  const completedTaskStyle = {
-    textDecoration: 'line-through'
-  }
 
   return (
     <div className="container">
       <h1 className="heading">Task list</h1>
 
       <div className="wrapper">
-        <form className="form" action="submit" onSubmit={handleSubmit}>
-          <input type="text" value={task} onChange={handleInput}/>
-          <button className="btn" type="submit">Add task</button>
-        </form>
-
-        <div className="btnSet">
-          <button type="button" onClick={handleShowAll}>Show all</button>
-          <button type="button" onClick={handleShowComplete}>Show complete</button>
-          <button type="button" onClick={handleShowIncomplete}>Show incomplete</button>
-        </div>
-
-        <ul className="list">
-          {filteredTodos.map(todo => (
-            <li key={todo.id}>
-              <label style={todo.complete ? completedTaskStyle : null}>
-                <input
-                  type="checkbox"
-                  className="checkbox"
-                  checked={todo.complete}
-                  onChange={() => handleCheckbox(todo)}/>
-                {todo.task}</label>
-            </li>
-          ))}
-        </ul>
+        <AddTodo dispatch={dispatchTodos} />
+        <Filter dispatch={dispatchFilter} />
+        <TodoList dispatch={dispatchTodos} todos={filteredTodos}/>
       </div>
     </div>
   );
