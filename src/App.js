@@ -4,6 +4,7 @@ import './App.css';
 import AddTodo from './components/AddTodo/AddTodo';
 import Filter from './components/Filter/Filter';
 import TodoList from './components/TodoList/TodoList';
+import TodoContext from './context/TodoContext';
 
 const initialTodos = [
   {
@@ -69,10 +70,7 @@ const App = () => {
   const [filter, dispatchFilter] = useReducer(filterReducer, 'ALL');
   const [todos, dispatchTodos] = useReducer(todoReducer, initialTodos);
 
-  const filteredTodos = todos.filter(todo => {
-    if (filter === 'ALL') {
-      return true;
-    }
+  const filteredTodos = filter === 'ALL' ? todos : todos.filter(todo => {
     if (filter === 'COMPLETE' && todo.complete) {
       return true;
     }
@@ -85,11 +83,13 @@ const App = () => {
   return (
     <div className="container">
       <h1 className="heading">Task list</h1>
-
       <div className="wrapper">
-        <AddTodo dispatch={dispatchTodos} />
-        <Filter dispatch={dispatchFilter} />
-        <TodoList dispatch={dispatchTodos} todos={filteredTodos}/>
+        <TodoContext.Provider value={dispatchTodos}>
+          <AddTodo />
+          <Filter dispatch={dispatchFilter} />
+          <TodoList todos={filteredTodos}/>
+        </TodoContext.Provider>
+
       </div>
     </div>
   );

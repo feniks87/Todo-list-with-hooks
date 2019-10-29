@@ -2,10 +2,10 @@ import React from 'react';
 import TodoItem from './TodoItem/TodoItem';
 import './TodoList.css';
 
-const TodoList = ({ dispatch, todos }) => (
+const TodoList = ({ todos }) => (
     <ul className="list">
         {todos.map(todo => (
-            <TodoItem key={todo.id} dispatch={dispatch} todo={todo} />
+            <TodoItem key={todo.id} todo={todo} />
         ))}
     </ul>
 )
